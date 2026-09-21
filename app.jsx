@@ -78,8 +78,12 @@ const CheckIcon = ({ size = 16, color = 'currentColor' }) => (
 
 const HeroLogo = () => (
   <header style={{
-    paddingTop: 'clamp(28px, 4.5vw, 56px)',
-    paddingBottom: 'clamp(8px, 1.5vw, 18px)',
+    /* O respiro do hero é destes paddings, e só. O logo.png foi recortado
+       na caixa da marca (946x212) — antes ele carregava 408px de
+       transparência em cima e embaixo, e era isso, não uma decisão de
+       layout, que dava altura ao hero. */
+    paddingTop: 'clamp(56px, 8vw, 96px)',
+    paddingBottom: 'clamp(40px, 6vw, 72px)',
     paddingLeft: '24px',
     paddingRight: '24px',
     display: 'flex',
@@ -91,10 +95,12 @@ const HeroLogo = () => (
   }}>
     <div style={{
       position: 'absolute',
-      top: '40%', left: '50%',
+      /* Centrado no header, que agora é do tamanho da marca. Com o PNG
+         quadrado isto era 40%, para compensar a transparência. */
+      top: '50%', left: '50%',
       transform: 'translate(-50%, -50%)',
       width: 'min(900px, 90vw)',
-      height: '420px',
+      height: 'clamp(120px, 25vw, 300px)',
       background: 'radial-gradient(ellipse, rgba(242,201,76,0.06) 0%, transparent 65%)',
       pointerEvents: 'none',
       zIndex: 0,
@@ -107,7 +113,10 @@ const HeroLogo = () => (
       style={{
         position: 'relative',
         zIndex: 1,
-        width: 'min(720px, 92vw)',
+        /* 580px aproxima a marca dos 600px do parágrafo abaixo, e os dois
+           passam a ler como uma coluna só. A 92vw ela encostava nas bordas
+           do celular; 84vw devolve a margem. */
+        width: 'min(580px, 84vw)',
         height: 'auto',
         display: 'block',
         objectFit: 'contain',
