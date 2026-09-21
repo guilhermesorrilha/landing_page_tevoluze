@@ -11,7 +11,7 @@ const T = {
 
 const CONTENT = {
   accentColor: "#f2c94c",
-  introText: "Sou Daniel Teodozio, barbeiro há mais de 10 anos. Aqui você encontra meus cursos, eventos e bastidores — pra quem quer transformar um melhor caminho.",
+  introText: "Sou Daniel Teodozio, barbeiro há mais de 10 anos. Aqui você encontra meus cursos, eventos e bastidores — pra quem quer trilhar um caminho melhor.",
   ctaLabel: "Saiba mais",
   showIntro: true,
   whatsappNumber: "5511985298184",
@@ -29,6 +29,7 @@ const PlaceholderImg = ({ index, style = {} }) => {
   const p = palettes[index % palettes.length];
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400"
+         preserveAspectRatio="xMidYMid slice"
          style={{ display:'block', width:'100%', height:'100%', ...style }}>
       <rect width="400" height="400" fill={p.bg} />
       {[-4,-3,-2,-1,0,1,2,3,4,5,6,7,8].map(i => (
@@ -144,14 +145,18 @@ const IntroSection = ({ text }) => (
 
 const FeaturedCard = ({ item, ctaLabel, accentColor }) => {
   const [hovered, setHovered] = React.useState(false);
-  const openLink = () => { if (item.link) window.open(item.link, '_blank', 'noopener'); };
 
   return (
     <section style={{ padding: '0 24px 4px', maxWidth: '1200px', margin: '0 auto' }}>
-      <div
-        onClick={openLink}
+      <a
+        href={item.link || undefined}
+        target={item.link ? '_blank' : undefined}
+        rel={item.link ? 'noopener noreferrer' : undefined}
+        aria-label={item.alt ? `${item.alt} — ${ctaLabel}` : ctaLabel}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
+        onFocus={() => setHovered(true)}
+        onBlur={() => setHovered(false)}
         className="fade-up fade-up-d2"
         style={{
           position: 'relative',
@@ -165,6 +170,7 @@ const FeaturedCard = ({ item, ctaLabel, accentColor }) => {
           aspectRatio: '16/7',
           display: 'flex',
           alignItems: 'flex-end',
+          textDecoration: 'none',
         }}
       >
         {item.image
@@ -194,14 +200,17 @@ const FeaturedCard = ({ item, ctaLabel, accentColor }) => {
           padding: 'clamp(20px, 3vw, 32px) clamp(20px, 3vw, 40px)',
           display: 'flex', justifyContent: 'flex-end', width: '100%',
         }}>
-          <button
+          {/* Visual apenas: quem carrega o link e o foco é a âncora do card.
+              Um <button> aqui seria HTML inválido dentro de <a>. */}
+          <span
+            aria-hidden="true"
             style={{
-              background: hovered ? '#ffe066' : accentColor,
-              border: 'none', cursor: 'pointer',
+              display: 'inline-block',
               fontFamily: T.sans,
               fontSize: '13px', fontWeight: 700,
               letterSpacing: '0.02em',
               color: '#161310',
+              background: hovered ? '#ffe066' : accentColor,
               padding: '12px 28px',
               borderRadius: '999px',
               transition: 'background 200ms ease, transform 120ms ease',
@@ -210,35 +219,35 @@ const FeaturedCard = ({ item, ctaLabel, accentColor }) => {
             }}
           >
             {ctaLabel} →
-          </button>
+          </span>
         </div>
-      </div>
+      </a>
     </section>
   );
 };
 
 const CardItem = ({ item, index, accentColor }) => {
   const [hov, setHov] = React.useState(false);
-  const isComingSoon = !!item.comingSoon;
-  const openLink = () => {
-    if (isComingSoon) return;
-    if (item.link) window.open(item.link, '_blank', 'noopener');
-  };
 
   return (
-    <div
-      onClick={openLink}
+    <a
+      href={item.link || undefined}
+      target={item.link ? '_blank' : undefined}
+      rel={item.link ? 'noopener noreferrer' : undefined}
+      aria-label={item.alt || undefined}
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
+      onFocus={() => setHov(true)}
+      onBlur={() => setHov(false)}
       style={{
+        display: 'block',
         position: 'relative',
         aspectRatio: '1/1',
-        cursor: isComingSoon ? 'default' : (item.link ? 'pointer' : 'default'),
+        cursor: item.link ? 'pointer' : 'default',
         overflow: 'hidden',
         background: T.surface,
         borderRadius: '6px',
-        outline: hov && !isComingSoon ? `1.5px solid ${accentColor}` : '1px solid transparent',
-        outlineOffset: hov ? '0px' : '0px',
+        outline: hov ? `1.5px solid ${accentColor}` : '1px solid transparent',
         transition: 'outline-color 200ms ease',
       }}
     >
@@ -250,46 +259,18 @@ const CardItem = ({ item, index, accentColor }) => {
               display: 'block', width: '100%', height: '100%',
               objectFit: 'cover',
               transition: 'transform 350ms ease',
-              transform: hov && !isComingSoon ? 'scale(1.06)' : 'scale(1)',
+              transform: hov ? 'scale(1.06)' : 'scale(1)',
             }}
           />
         : <PlaceholderImg index={index + 1} />
       }
       <div style={{
         position: 'absolute', inset: 0,
-        background: `rgba(242,201,76,${hov && !isComingSoon ? 0.05 : 0})`,
+        background: `rgba(242,201,76,${hov ? 0.05 : 0})`,
         transition: 'background 200ms ease',
         pointerEvents: 'none',
       }} />
-
-      {isComingSoon && (
-        <>
-          <div style={{
-            position: 'absolute', inset: 0,
-            background: 'rgba(10,10,10,0.65)',
-            pointerEvents: 'none',
-          }} />
-          <div style={{
-            position: 'absolute', inset: 0,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            pointerEvents: 'none',
-          }}>
-            <span style={{
-              fontFamily: "'Nunito', sans-serif",
-              fontSize: 'clamp(13px, 1.6vw, 16px)',
-              fontWeight: 500,
-              letterSpacing: '0.1em',
-              textTransform: 'uppercase',
-              color: '#d8d0c0',
-            }}>
-              Em breve
-            </span>
-          </div>
-        </>
-      )}
-    </div>
+    </a>
   );
 };
 
@@ -330,8 +311,14 @@ const LandingFooter = ({ accentColor, whatsappNumber }) => {
             alignItems: 'center',
             gap: '12px',
             padding: '14px 26px',
-            background: waHov ? '#1f8b4c' : '#25D366',
-            color: '#fff',
+            /* Tinta escura, não branca: branco sobre #25D366 dá 2.0:1 e
+               reprova em WCAG AA. #161310 sobe para 9.3:1 sem mexer no
+               verde oficial da marca.
+               O hover clareia em vez de escurecer — o antigo #1f8b4c
+               derrubaria a tinta escura para 4.3:1. Clareando, dá 11.2:1,
+               e fica coerente com o gold-300 e o controle de vidro. */
+            background: waHov ? '#5ce295' : '#25D366',
+            color: '#161310',
             textDecoration: 'none',
             borderRadius: '999px',
             fontFamily: T.sans,
@@ -343,14 +330,15 @@ const LandingFooter = ({ accentColor, whatsappNumber }) => {
             boxShadow: '0 6px 20px rgba(37, 211, 102, 0.25)',
           }}
         >
-          <WhatsAppIcon size={20} color="#fff" />
+          <WhatsAppIcon size={20} color="#161310" />
           Fale comigo no WhatsApp
         </a>
 
         <div style={{
           fontFamily: T.sans,
           fontSize: '11px',
-          color: T.dimmed,
+          /* T.dimmed dava 2.6:1 sobre o #0f0f0f do rodapé. T.muted dá 6.1:1. */
+          color: T.muted,
           letterSpacing: '0.04em',
           textAlign: 'center',
         }}>
@@ -371,7 +359,7 @@ const GRID_ITEMS = [
   { image: null, link: 'https://hotmart.com',          alt: 'Curso 1' },
   { image: null, link: 'https://sympla.com.br',        alt: 'Evento 1' },
   { image: null, link: 'https://wa.me/5511985298184',  alt: 'Produto 3' },
-  { image: null, link: 'https://hotmart.com',          alt: 'Curso 2', comingSoon: true },
+  { image: null, link: 'https://hotmart.com',          alt: 'Curso 2' },
 ];
 
 const ShareButton = ({ accentColor }) => {
@@ -380,7 +368,7 @@ const ShareButton = ({ accentColor }) => {
 
   const handleShare = async () => {
     const data = {
-      title: 'Tevoluze Acadeny',
+      title: 'Tevoluze Academy',
       text: 'Cursos e eventos da Tevoluze',
       url: window.location.href,
     };
