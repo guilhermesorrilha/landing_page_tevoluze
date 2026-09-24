@@ -77,12 +77,15 @@ const CheckIcon = ({ size = 16, color = 'currentColor' }) => (
 );
 
 const HeroLogo = () => (
-  <header style={{
+  <header className="hero-header" style={{
     /* O respiro do hero é destes paddings, e só. O logo.png foi recortado
        na caixa da marca (946x212) — antes ele carregava 408px de
        transparência em cima e embaixo, e era isso, não uma decisão de
-       layout, que dava altura ao hero. */
-    paddingTop: 'clamp(56px, 8vw, 96px)',
+       layout, que dava altura ao hero.
+
+       O padding-top mora em styles.css (.hero-header): no mobile ele precisa
+       abrir espaço para o botão fixo de compartilhar, e estilo inline ganha
+       de media query. */
     paddingBottom: 'clamp(40px, 6vw, 72px)',
     paddingLeft: '24px',
     paddingRight: '24px',
@@ -156,7 +159,7 @@ const FeaturedCard = ({ item, ctaLabel, accentColor }) => {
   const [hovered, setHovered] = React.useState(false);
 
   return (
-    <section style={{ padding: '0 24px 4px', maxWidth: '1200px', margin: '0 auto' }}>
+    <section style={{ padding: '0 24px', maxWidth: '1200px', margin: '0 auto' }}>
       <a
         href={item.link || undefined}
         target={item.link ? '_blank' : undefined}
@@ -166,7 +169,7 @@ const FeaturedCard = ({ item, ctaLabel, accentColor }) => {
         onMouseLeave={() => setHovered(false)}
         onFocus={() => setHovered(true)}
         onBlur={() => setHovered(false)}
-        className="fade-up fade-up-d2"
+        className="featured-card fade-up fade-up-d2"
         style={{
           position: 'relative',
           cursor: item.link ? 'pointer' : 'default',
@@ -176,7 +179,8 @@ const FeaturedCard = ({ item, ctaLabel, accentColor }) => {
           border: `1px solid ${hovered ? 'rgba(242,201,76,0.4)' : 'rgba(242,201,76,0.1)'}`,
           transition: 'border-color 250ms ease, transform 250ms ease',
           transform: hovered ? 'translateY(-2px)' : 'translateY(0)',
-          aspectRatio: '16/7',
+          /* aspect-ratio vive em styles.css (.featured-card): no mobile abre
+             para 4/3, e inline ganharia da media query. */
           display: 'flex',
           alignItems: 'flex-end',
           textDecoration: 'none',
@@ -234,64 +238,6 @@ const FeaturedCard = ({ item, ctaLabel, accentColor }) => {
     </section>
   );
 };
-
-const CardItem = ({ item, index, accentColor }) => {
-  const [hov, setHov] = React.useState(false);
-
-  return (
-    <a
-      href={item.link || undefined}
-      target={item.link ? '_blank' : undefined}
-      rel={item.link ? 'noopener noreferrer' : undefined}
-      aria-label={item.alt || undefined}
-      onMouseEnter={() => setHov(true)}
-      onMouseLeave={() => setHov(false)}
-      onFocus={() => setHov(true)}
-      onBlur={() => setHov(false)}
-      style={{
-        display: 'block',
-        position: 'relative',
-        aspectRatio: '1/1',
-        cursor: item.link ? 'pointer' : 'default',
-        overflow: 'hidden',
-        background: T.surface,
-        borderRadius: '6px',
-        outline: hov ? `1.5px solid ${accentColor}` : '1px solid transparent',
-        transition: 'outline-color 200ms ease',
-      }}
-    >
-      {item.image
-        ? <img
-            src={item.image}
-            alt={item.alt || ''}
-            style={{
-              display: 'block', width: '100%', height: '100%',
-              objectFit: 'cover',
-              transition: 'transform 350ms ease',
-              transform: hov ? 'scale(1.06)' : 'scale(1)',
-            }}
-          />
-        : <PlaceholderImg index={index + 1} />
-      }
-      <div style={{
-        position: 'absolute', inset: 0,
-        background: `rgba(242,201,76,${hov ? 0.05 : 0})`,
-        transition: 'background 200ms ease',
-        pointerEvents: 'none',
-      }} />
-    </a>
-  );
-};
-
-const CardGrid = ({ items, accentColor }) => (
-  <section style={{ padding: '4px 24px 0', maxWidth: '1200px', margin: '0 auto' }}>
-    <div className="card-grid">
-      {items.map((item, i) => (
-        <CardItem key={i} item={item} index={i} accentColor={accentColor} />
-      ))}
-    </div>
-  </section>
-);
 
 const LandingFooter = ({ accentColor, whatsappNumber }) => {
   const [waHov, setWaHov] = React.useState(false);
@@ -360,16 +306,9 @@ const LandingFooter = ({ accentColor, whatsappNumber }) => {
 
 const FEATURED = {
   image: null,
-  link: 'https://www.sympla.com.br/evento/gestao-de-barbearia-tevoluze-academy/3440361?share_id=copiarlink&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZnRzaASFynRleHRuA2FlbQIxMQBzcnRjBmFwcF9pZA8xMjQwMjQ1NzQyODc0MTQAAadGQpcqDKXfCH69wYD51SMHAzIqGH2RyLe-cm9ur37wmI40xF_HPWv7dIkwSQ_aem_rtqi88yFY8AzjEyBlY_ZAg&utm_id=97760_v0_s00_e0_tv3&referrer=l.instagram.com&referrer=l.instagram.com',
-  alt: 'Curso em destaque',
+  link: '',
+  alt: '',
 };
-
-const GRID_ITEMS = [
-  { image: null, link: 'https://hotmart.com',          alt: 'Curso 1' },
-  { image: null, link: 'https://sympla.com.br',        alt: 'Evento 1' },
-  { image: null, link: 'https://wa.me/5511985298184',  alt: 'Produto 3' },
-  { image: null, link: 'https://hotmart.com',          alt: 'Curso 2' },
-];
 
 const ShareButton = ({ accentColor }) => {
   const [hov, setHov] = React.useState(false);
@@ -398,6 +337,7 @@ const ShareButton = ({ accentColor }) => {
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
       aria-label="Compartilhar página"
+      className="share-btn"
       style={{
         position: 'fixed',
         top: 'clamp(16px, 2vw, 24px)',
@@ -405,8 +345,8 @@ const ShareButton = ({ accentColor }) => {
         zIndex: 80,
         display: 'inline-flex',
         alignItems: 'center',
-        gap: '8px',
-        padding: '9px 14px',
+        /* gap e padding vivem em styles.css (.share-btn): no mobile viram
+           um círculo só com o ícone, e inline ganharia da media query. */
         background: hov ? 'rgba(216,208,192,0.12)' : 'rgba(28,26,23,0.7)',
         backdropFilter: 'blur(10px)',
         WebkitBackdropFilter: 'blur(10px)',
@@ -422,7 +362,7 @@ const ShareButton = ({ accentColor }) => {
       }}
     >
       {shared ? <CheckIcon size={15} color="#9be08b" /> : <ShareIcon size={15} color="#d8d0c0" />}
-      <span>{shared ? 'Link copiado' : 'Compartilhar'}</span>
+      <span className="share-btn-label">{shared ? 'Link copiado' : 'Compartilhar'}</span>
     </button>
   );
 };
@@ -439,8 +379,6 @@ const App = () => {
       {t.showIntro && <IntroSection text={t.introText} />}
 
       <FeaturedCard item={FEATURED} ctaLabel={t.ctaLabel} accentColor={accent} />
-
-      <CardGrid items={GRID_ITEMS} accentColor={accent} />
 
       <LandingFooter
         accentColor={accent}

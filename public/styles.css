@@ -32,13 +32,26 @@
   .fade-up-d2 { animation-delay: 0.3s;  opacity: 0; }
   .logo-in { animation: logoIn 0.9s cubic-bezier(.2,.7,.2,1) forwards; }
 
-  .card-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 4px;
-  }
+  .hero-header { padding-top: clamp(56px, 8vw, 96px); }
+  .share-btn   { gap: 8px; padding: 9px 14px; }
+  .featured-card { aspect-ratio: 16 / 7; }
+
+  /* No mobile o clamp cai no mínimo (8vw só passa de 56px acima de 700px de
+     largura) e o botão fixo de compartilhar termina em ~61px — sobravam 4px.
+     O botão também perde o rótulo: com ele são 133px, que cruzam a faixa do
+     logo (84vw centralizado). O aria-label cobre o texto escondido. */
   @media (max-width: 600px) {
-    .card-grid { grid-template-columns: repeat(2, 1fr); }
+    .hero-header     { padding-top: 80px; }
+    .share-btn       { padding: 13px; gap: 0; }
+    .share-btn-label { display: none; }
+
+    /* No celular a largura é fixa (342px num aparelho de 390px), então a
+       proporção só controla a altura. A 16/7 do desktop dava 150px aqui:
+       uma tarja fina para a única oferta da página. A 16/9 sobe para 192px
+       sem sair do formato deitado — abaixo de 1,5 (4/3, 1/1) o card passa a
+       ler como quadrado. Atenção: o objectFit é cover, então a arte precisa
+       nascer nesta proporção ou será recortada. */
+    .featured-card { aspect-ratio: 16 / 9; }
   }
 
   /* As classes de entrada partem de opacity: 0, então não basta desligar a
