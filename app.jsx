@@ -11,12 +11,15 @@ const T = {
 
 const CONTENT = {
   accentColor: "#f2c94c",
-  introText: "Sou Daniel Teodozio, barbeiro há mais de 10 anos. Aqui você encontra meus cursos, eventos e bastidores — pra quem quer trilhar um caminho melhor.",
+  introText: "Sou Daniel Teodozio, barbeiro e dono de barbearia há mais de 10 anos. Aqui transformo a sua barbearia em empresa.",
   ctaLabel: "Saiba mais",
   showIntro: true,
   whatsappNumber: "5511985298184",
 };
 
+/* RESERVA, hoje sem uso. Era o chão do FeaturedCard até ele ganhar texto e
+   camadas próprias, e o dos tiles do CardGrid, que está desligado enquanto
+   houver um curso só. Volta a ser usado quando o mosaico voltar. */
 const PlaceholderImg = ({ index, style = {} }) => {
   const palettes = [
     { bg: '#1e1a12', line: 'rgba(242,201,76,0.12)' },
@@ -164,7 +167,6 @@ const FeaturedCard = ({ item, ctaLabel, accentColor }) => {
         href={item.link || undefined}
         target={item.link ? '_blank' : undefined}
         rel={item.link ? 'noopener noreferrer' : undefined}
-        aria-label={item.alt ? `${item.alt} — ${ctaLabel}` : ctaLabel}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
         onFocus={() => setHovered(true)}
@@ -198,9 +200,17 @@ const FeaturedCard = ({ item, ctaLabel, accentColor }) => {
                 transform: hovered ? 'scale(1.04)' : 'scale(1)',
               }}
             />
-          : <div style={{ position: 'absolute', inset: 0 }}>
-              <PlaceholderImg index={0} />
-            </div>
+          : <React.Fragment>
+              {/* Sem foto, o chão do card é construído em camadas: uma faixa
+                  de luz na diagonal, o numeral fantasma sangrando pela borda,
+                  o brilho radial irmão do halo do hero, e a vinheta. Quando a
+                  foto real entrar elas saem — textura sobre textura vira ruído,
+                  e o scrim abaixo passa a ser quem segura o contraste. */}
+              <div className="fc-layer fc-sheen" />
+              <div className="fc-ghost" aria-hidden="true">{item.amount}</div>
+              <div className="fc-layer fc-glow" />
+              <div className="fc-layer fc-vignette" />
+            </React.Fragment>
         }
 
         <div style={{
@@ -211,20 +221,34 @@ const FeaturedCard = ({ item, ctaLabel, accentColor }) => {
         <div style={{
           position: 'relative', zIndex: 2,
           padding: 'clamp(20px, 3vw, 32px) clamp(20px, 3vw, 40px)',
-          display: 'flex', justifyContent: 'flex-end', width: '100%',
+          display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end',
+          width: '100%', gap: '16px',
         }}>
+          <div className="fc-type">
+            <div className="fc-over">{item.eyebrow}</div>
+            <div className="fc-numrow">
+              <span className="fc-num">{item.amount}</span>
+              <span className="fc-dias">{item.unit}</span>
+            </div>
+            <div className="fc-headline">{item.headline}</div>
+          </div>
+
           {/* Visual apenas: quem carrega o link e o foco é a âncora do card.
-              Um <button> aqui seria HTML inválido dentro de <a>. */}
+              Um <button> aqui seria HTML inválido dentro de <a>.
+              fontSize e padding vivem em styles.css (.fc-cta): no mobile
+              encolhem para o texto do card caber ao lado, e inline ganharia
+              da media query. */}
           <span
             aria-hidden="true"
+            className="fc-cta"
             style={{
               display: 'inline-block',
+              flexShrink: 0,
               fontFamily: T.sans,
-              fontSize: '13px', fontWeight: 700,
+              fontWeight: 700,
               letterSpacing: '0.02em',
               color: '#161310',
               background: hovered ? '#ffe066' : accentColor,
-              padding: '12px 28px',
               borderRadius: '999px',
               transition: 'background 200ms ease, transform 120ms ease',
               transform: hovered ? 'scale(1.04)' : 'scale(1)',
@@ -308,6 +332,10 @@ const FEATURED = {
   image: null,
   link: '',
   alt: '',
+  eyebrow: 'Desafio Tevoluze',
+  amount: '30',
+  unit: 'dias',
+  headline: 'De barbeiro a empresário',
 };
 
 const ShareButton = ({ accentColor }) => {

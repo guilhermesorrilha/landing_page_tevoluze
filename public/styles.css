@@ -34,7 +34,99 @@
 
   .hero-header { padding-top: clamp(56px, 8vw, 96px); }
   .share-btn   { gap: 8px; padding: 9px 14px; }
-  .featured-card { aspect-ratio: 16 / 7; }
+  /* O texto do card é dimensionado pela largura do próprio card, então ele
+     vira container de consulta: a proporção já é fixa, e assim os tamanhos
+     escalam juntos sem recalcular vw a cada mudança de max-width. Os valores
+     em cqw dão os números reais quando o card está nos seus 1152px. */
+  .featured-card { aspect-ratio: 16 / 7; container-type: inline-size; }
+
+  .fc-layer { position: absolute; inset: 0; pointer-events: none; }
+
+  /* Faixa única de luz, não listrado: nada se repete, então não há padrão
+     para o olho fixar. */
+  .fc-sheen {
+    background: linear-gradient(118deg,
+      transparent 18%,
+      rgba(242,201,76,0.05) 38%,
+      rgba(242,201,76,0.11) 50%,
+      rgba(242,201,76,0.04) 62%,
+      transparent 80%);
+  }
+
+  /* Irmão do halo do hero, no mesmo ouro */
+  .fc-glow {
+    background: radial-gradient(ellipse 55% 70% at 24% 72%,
+      rgba(242,201,76,0.16) 0%, transparent 65%);
+  }
+
+  /* Escurece as bordas e dá volume sem introduzir desenho nenhum */
+  .fc-vignette {
+    background: radial-gradient(ellipse 120% 150% at 50% 42%,
+      transparent 38%, rgba(0,0,0,0.42) 100%);
+  }
+
+  .fc-ghost {
+    position: absolute;
+    left: -3%;
+    bottom: -24%;
+    font-size: 58cqw;
+    font-weight: 800;
+    line-height: 0.75;
+    letter-spacing: -0.05em;
+    color: rgba(242,201,76,0.07);
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .fc-type { min-width: 0; }
+
+  /* 14px, 16px, 18px, 240px, 56px e 28px quando o card tem 1152px */
+  .fc-over {
+    font-size: 1.215cqw;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #e0e0e0;
+    line-height: 1;
+  }
+  .fc-numrow { display: flex; align-items: baseline; gap: 1.389cqw; margin-top: 1.5625cqw; }
+  .fc-num {
+    font-size: 20.83cqw;
+    font-weight: 800;
+    line-height: 0.82;
+    letter-spacing: -0.045em;
+    color: #f2c94c;
+  }
+  /* O degradê entre os dois ouros exige background-clip: text, que pinta a
+     letra de transparente. Sem o suporte, o numeral sumiria — daí a cor
+     sólida acima e o degradê só dentro da guarda. */
+  @supports (-webkit-background-clip: text) or (background-clip: text) {
+    .fc-num {
+      background: linear-gradient(170deg, #ffe066 8%, #f2c94c 54%, rgba(242,201,76,0.55) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+  }
+  .fc-dias {
+    font-size: 4.861cqw;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #e0e0e0;
+    line-height: 1;
+  }
+  .fc-headline {
+    font-size: 2.43cqw;
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: #e0e0e0;
+    margin-top: 1.04cqw;
+    max-width: 46cqw;
+    text-wrap: balance;
+  }
+  .fc-cta { font-size: 13px; padding: 12px 28px; }
 
   /* No mobile o clamp cai no mínimo (8vw só passa de 56px acima de 700px de
      largura) e o botão fixo de compartilhar termina em ~61px — sobravam 4px.
@@ -52,6 +144,15 @@
        ler como quadrado. Atenção: o objectFit é cover, então a arte precisa
        nascer nesta proporção ou será recortada. */
     .featured-card { aspect-ratio: 16 / 9; }
+
+    /* Em 342px de largura sobram 302px por dentro. A pílula a 13px ocupa
+       ~134px e não deixaria a linha de promessa caber ao lado, então ela
+       encolhe aqui — é a única vez que o CTA sai dos 13px do token. */
+    .fc-cta      { font-size: 12px; padding: 10px 20px; }
+    .fc-over     { font-size: 11px; letter-spacing: 0.2em; }
+    .fc-numrow   { gap: 8px; margin-top: 8px; }
+    .fc-dias     { font-size: 16px; }
+    .fc-headline { font-size: 14px; margin-top: 10px; max-width: 176px; }
   }
 
   /* As classes de entrada partem de opacity: 0, então não basta desligar a
