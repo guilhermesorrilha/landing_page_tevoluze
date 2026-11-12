@@ -1,0 +1,10 @@
+# A Netlify lê este arquivo ao conectar o repositório: não é preciso
+# preencher build command nem publish directory na interface dela.
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  # Mesma versão que o projeto já usava em CI antes da migração, para não
+  # trocar duas variáveis de uma vez.
+  NODE_VERSION = "20"
