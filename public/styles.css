@@ -115,6 +115,15 @@
     text-transform: uppercase;
     color: #e0e0e0;
     line-height: 1;
+    /* Correção óptica, não conserto de alinhamento: pela linha de base o
+       DIAS e o numeral já coincidem, e a fonte ainda desce as redondas 1,5%
+       do em por conta própria. O que se corrige é a leitura — uma palavra
+       pequena ao lado de um numeral 4,3 vezes maior tem o centro visual
+       muito abaixo, e o olho entende como se tivesse caído.
+       Aqui rende 1,1px. No celular o valor dobra, e a media query explica
+       por quê. */
+    position: relative;
+    bottom: 0.02em;
   }
   .fc-headline {
     font-size: 2.43cqw;
@@ -151,7 +160,11 @@
     .fc-cta      { font-size: 12px; padding: 10px 20px; }
     .fc-over     { font-size: 11px; letter-spacing: 0.2em; }
     .fc-numrow   { gap: 8px; margin-top: 8px; }
-    .fc-dias     { font-size: 16px; }
+    /* O dobro do valor do desktop. Proporcionalmente 0.02em bastaria, mas
+       num DIAS de 16px isso dá 0,3px: menos de um pixel físico numa tela
+       2x, e a correção não chegaria a existir. 0.04em rende 0,6px, ou de
+       1,3 a 1,9 pixels conforme a densidade. */
+    .fc-dias     { font-size: 16px; bottom: 0.04em; }
     .fc-headline { font-size: 14px; margin-top: 10px; max-width: 176px; }
   }
 
