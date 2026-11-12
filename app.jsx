@@ -330,7 +330,12 @@ const LandingFooter = ({ accentColor, whatsappNumber }) => {
 
 const FEATURED = {
   image: null,
-  link: '',
+  /* Contato direto do Daniel — 11 97713-0319. O número em
+     CONTENT.whatsappNumber, que o rodapé usa, é o da barbearia: são
+     pessoas diferentes do outro lado, não dá para unificar. Enquanto não
+     há página do curso o destaque leva para esta conversa; depois é só
+     trocar por uma URL. */
+  link: 'https://wa.me/5511977130319',
   alt: '',
   eyebrow: 'Desafio Tevoluze',
   amount: '30',
